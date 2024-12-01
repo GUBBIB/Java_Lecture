@@ -44,5 +44,13 @@ public class FunctionPanel extends JPanel {
             }
         });
 
+        // 이름, 번호, 이메일, 사진경로 중 한개만 or 다 적었을 때 검색
+        // 검색창에는 띄워쓰기를 기준으로 적음 
+        search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                
+            }
+        });
     }
 }
