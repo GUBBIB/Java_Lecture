@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 // 메인 클래스
 public class AddressBook extends JFrame {
-    public ArrayList<AddressDataType> addressList = new ArrayList<>();
+    public static ArrayList<AddressDataType> addressList = new ArrayList<>();
     public AddressBook(){
         addressList = loadData();
 
@@ -19,7 +19,7 @@ public class AddressBook extends JFrame {
 
         createMenu();
 
-        AddressListPanel leftPanel = new AddressListPanel(addressList);
+        AddressListPanel leftPanel = new AddressListPanel(this, addressList);
         FunctionPanel rightPanel = new FunctionPanel(this, addressList, leftPanel);
 
         leftPanel.setSize(480, 920);
@@ -43,8 +43,8 @@ public class AddressBook extends JFrame {
         JMenu screenMenu = new JMenu("File");
         mb.add(screenMenu);
 
-        JMenuItem[] items = new JMenuItem[3];
-        String[] titles = {"연락처 추가", "연락처 일괄 추가", "종료"};
+        JMenuItem[] items = new JMenuItem[2];
+        String[] titles = {"연락처 추가", "종료"};
 
         // 각 버튼의 이벤트 추가 및 메뉴 아이템 등록
         MyMenuActionListener listener = new MyMenuActionListener();
@@ -70,10 +70,6 @@ public class AddressBook extends JFrame {
                 case "연락처 추가":
                     break;
 
-                // 버튼과 동일 기능
-                case "연락처 일괄추가":
-                    break;
-                    
                 // 그냥 종료
                 case "종료":
                     System.exit(0);
@@ -83,26 +79,26 @@ public class AddressBook extends JFrame {
     }
 
     // 입력한 연락처를 이름.txt 파일로 변환
-    public static void saveData( ArrayList<AddressDataType> addressList) {
+    public static ArrayList<AddressDataType> saveData(AddressDataType addressAppendList) {
         File directory = new File("src\\AddressBook\\");
 
-        for (AddressDataType addressData : addressList) {
-            // 이름 txt 생성
-            String fileName = addressData.getName() + ".txt";
-            File file = new File(directory, fileName);
+        // 이름 || 번호 .txt 생성
+        String fileName = addressAppendList.getName() + "&" + addressAppendList.getNumber() + ".txt";
+        File file = new File(directory, fileName);
 
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-                bw.write("이름: " + addressData.getName());
-                bw.newLine();
-                bw.write("번호: " + addressData.getNumber());
-                bw.newLine();
-                bw.write("이메일: " + (addressData.getEmail() != null ? addressData.getEmail() : "null"));
-                bw.newLine();
-                bw.write("사진: " + (addressData.getPig() != null ? addressData.getPig().getDescription() : "null"));
-            } catch(IOException e){
-                System.out.println("파일 접근불가!");
-            }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            bw.write("이름: " + addressAppendList.getName());
+            bw.newLine();
+            bw.write("번호: " + addressAppendList.getNumber());
+            bw.newLine();
+            bw.write("이메일: " + ((addressAppendList.getEmail() == null ) ? addressAppendList.getEmail() : "null" ));
+            bw.newLine();
+            bw.write("사진: " + ((addressAppendList.getPig() != null) ? addressAppendList.getPig().getDescription() : "null"));
+        } catch(IOException e){
+            System.out.println("파일 접근불가!");
         }
+        addressList.add(addressAppendList);
+        return addressList;
     }
 
     // AddressBook 디렉토리 안의 .txt파일들을 읽어서 ArrayList addressList에 저장
@@ -159,9 +155,6 @@ public class AddressBook extends JFrame {
 
     }
 
-
-
-    
     // Main 실행
     public static void main(String[] args){
 
@@ -175,11 +168,11 @@ public class AddressBook extends JFrame {
                 System.exit(0);
             }
         }
-        
+
         new AddressBook();
     }
 }
 
 
-// 지금 연락처 추가까지 완성
-// 검색, 수정, 삭제
+// 지금 연락처 추가, 삭제, 검색 까지 완성
+// 수정(새 다이얼로그로)

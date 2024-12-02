@@ -2,10 +2,14 @@ import javax.swing.*;
 
 // 연락처를 저장할 타입 클랙스
 public class AddressDataType {
-    private String name, number, email;
+    private String name, number, email = null;
     private ImageIcon pig;
 
     // 모든 정보가 입력 됐을 때를 기준으로 입력이 안된 정보는 null 표시
+    public AddressDataType(){
+        name = number = email = null;
+        pig = null;
+    }
     public AddressDataType(String name, String number) {
         this(name, number, null, null);
     }

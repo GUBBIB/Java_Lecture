@@ -24,6 +24,8 @@ public class AddressInputDialog extends JDialog {
     private FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG", "jpg", "png");
     private ImageIcon imgIcon;
 
+
+    private static AddressDataType addressData;
     // chk를 통해서 1개 입력인지 n개 입력인지 구분
     public AddressInputDialog(JFrame f, String title, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel){
         super(f, title, true);
@@ -75,9 +77,10 @@ public class AddressInputDialog extends JDialog {
                 String number = numberTextField.getText();
                 String email = emailTextField.getText();
 
-                addressList.add(new AddressDataType(name, number, email, imgIcon));
+                addressData = new AddressDataType(name, number, email, imgIcon);
+//                addressList.add(new AddressDataType(name, number, email, imgIcon));
 
-                AddressBook.saveData(addressList);
+                AddressBook.saveData(addressData);
 
                 leftPanel.updateLeftPanel(addressList);
                 setVisible(false);
