@@ -1,10 +1,13 @@
+package MyPanelPackage;
+import MyDataType.*;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
+
+import MyDialogPackage.AddressInputDialog;
 
 // 오른쪽 Panel 에 대한 클래스
 public class FunctionPanel extends JPanel {
@@ -21,11 +24,11 @@ public class FunctionPanel extends JPanel {
         setLayout(new GridLayout(3, 2, 5 ,100));
 
         // 글자 크기 수정
-        tf.setFont(new Font("SansSerif", Font.PLAIN, 30));
-        search.setFont(new Font("SansSerif", Font.PLAIN, 40));
-        add.setFont(new Font("SansSerif", Font.PLAIN, 30));
-        modify.setFont(new Font("SansSerif", Font.PLAIN, 40));
-        delete.setFont(new Font("SansSerif", Font.PLAIN, 40));
+        tf.setFont(new Font("D2Coding", Font.PLAIN, 30));
+        search.setFont(new Font("D2Coding", Font.PLAIN, 40));
+        add.setFont(new Font("D2Coding", Font.PLAIN, 30));
+        modify.setFont(new Font("D2Coding", Font.PLAIN, 40));
+        delete.setFont(new Font("D2Coding", Font.PLAIN, 40));
 
         // 컴포넌트 추가
         add(tf);
@@ -34,7 +37,7 @@ public class FunctionPanel extends JPanel {
         add(modify);
         add(delete);
 
-        // --------- 모든 버튼 actionListener 추가 ---------
+        // -------------------------------------- 모든 버튼 actionListener 추가 --------------------------------------
 
 
         // 연락처 추가 버튼
@@ -46,40 +49,26 @@ public class FunctionPanel extends JPanel {
             }
         });
 
+        // ----------------------------- 검색 기능 -----------------------------
         // 이름, 번호, 이메일, 사진경로 중 한개만 or 다 적었을 때 검색
         // 검색창에는 띄워쓰기를 기준으로 적음
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                String str = tf.getText();
-                String[] arr;
-                ArrayList<AddressDataType> tmpList = new ArrayList<>();
-
-                if(str.contains(" ")){
-                    StringTokenizer st = new StringTokenizer(str);
-
-                    arr = new String[st.countTokens()];
-                    for(int i=0; st.hasMoreTokens(); i++){
-                        arr[i] = st.nextToken();
-                    }
-                } else {
-                    arr = new String[]{str};
-                }
-
-                for(AddressDataType data : addressList){
-                    String tmp = data.getName()+" "+data.getNumber()+" "+data.getEmail()+" "+data.getPig();
-
-                    for(int i=0; i<arr.length; i++){
-                        if(tmp.contains(arr[i])){
-                            tmpList.add(data);
-                        }
-                    }
-                }
-                leftPanel.updateSearchLeftPanel(tmpList);
-
+                searchEnterClickedListener(tf, addressList, leftPanel);
             }
         });
+        tf.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchEnterClickedListener(tf, addressList, leftPanel);
+                }
+            }
+        });
+        // -----------------------------------------------------------------------
 
+        // ----------------------------- 삭제 기능 -----------------------------
         // 삭제 버튼 이벤트 리스너
         delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -127,5 +116,47 @@ public class FunctionPanel extends JPanel {
                 leftPanel.updateLeftPanel(addressList);
             }
         });
+        // -----------------------------------------------------------------------
+
+        // ----------------------------- 삭제 기능 -----------------------------
+        modify.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+            }
+        });
+
+        // -----------------------------------------------------------------------
+
+
+    }
+
+    // 검색 이벤트 리스너 안에서의 코드
+    public static void searchEnterClickedListener(JTextField tf, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel){
+        String str = tf.getText();
+        String[] arr;
+        ArrayList<AddressDataType> tmpList = new ArrayList<>();
+
+        if(str.contains(" ")){
+            StringTokenizer st = new StringTokenizer(str);
+
+            arr = new String[st.countTokens()];
+            for(int i=0; st.hasMoreTokens(); i++){
+                arr[i] = st.nextToken();
+            }
+        } else {
+            arr = new String[]{str};
+        }
+
+        for(AddressDataType data : addressList){
+            String tmp = data.getName()+" "+data.getNumber()+" "+data.getEmail()+" "+data.getPig();
+
+            for(int i=0; i<arr.length; i++){
+                if(tmp.contains(arr[i])){
+                    tmpList.add(data);
+                }
+            }
+        }
+        leftPanel.updateSearchLeftPanel(tmpList);
     }
 }

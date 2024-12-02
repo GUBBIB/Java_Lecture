@@ -1,11 +1,14 @@
+package MyDialogPackage;
+import MyDataType.AddressDataType;
+import MyPanelPackage.AddressListPanel;
+import MyGUI.*;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 // 연락처 추가 버튼 클릭 이벤트 클래스
 public class AddressInputDialog extends JDialog {
@@ -32,9 +35,9 @@ public class AddressInputDialog extends JDialog {
 
         chooser.setFileFilter(filter);
         setLayout(new GridLayout(4, 3, 5, 10));
-        nameTextField.setFont(new Font("SansSerif", Font.PLAIN, 30));
-        numberTextField.setFont(new Font("SansSerif", Font.PLAIN, 30));
-        emailTextField.setFont(new Font("SansSerif", Font.PLAIN, 30));
+        nameTextField.setFont(new Font("D2Coding", Font.PLAIN, 30));
+        numberTextField.setFont(new Font("D2Coding", Font.PLAIN, 30));
+        emailTextField.setFont(new Font("D2Coding", Font.PLAIN, 30));
 
         // 0 = name // 1 = number // 2 = email
         String[] arr = new String[3];

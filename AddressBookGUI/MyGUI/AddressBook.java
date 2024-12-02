@@ -1,9 +1,13 @@
+package MyGUI;
+import MyPanelPackage.*;
+import MyDataType.*;
+
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 // 메인 클래스
 public class AddressBook extends JFrame {
@@ -148,28 +152,11 @@ public class AddressBook extends JFrame {
             }
         }
 
-        // 제대로 읽었는지 확인용
+        // 제대로 읽었는지 확인용da
         System.out.println("연락처 읽기 완료");
 
         return addressList;
 
-    }
-
-    // Main 실행
-    public static void main(String[] args){
-
-        // File 클래스로 src 하위 폴더 AddressBook 생성
-        File directory = new File("src\\AddressBook");
-
-        // 폴더 생성 후 오류 확인
-        if(!directory.exists()){
-            if(!directory.mkdirs()){
-                System.out.println("경로 오류!");
-                System.exit(0);
-            }
-        }
-
-        new AddressBook();
     }
 }
 

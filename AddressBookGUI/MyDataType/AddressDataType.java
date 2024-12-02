@@ -1,3 +1,5 @@
+package MyDataType;
+
 import javax.swing.*;
 
 // 연락처를 저장할 타입 클랙스
