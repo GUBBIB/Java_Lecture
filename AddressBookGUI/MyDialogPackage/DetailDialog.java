@@ -1,4 +1,5 @@
 package MyDialogPackage;
+
 import MyDataType.AddressDataType;
 
 import javax.swing.*;

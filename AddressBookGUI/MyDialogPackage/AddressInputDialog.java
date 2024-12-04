@@ -1,4 +1,5 @@
 package MyDialogPackage;
+
 import MyDataType.AddressDataType;
 import MyPanelPackage.AddressListPanel;
 import MyGUI.*;
@@ -8,6 +9,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.security.Key;
 import java.util.ArrayList;
 
 // 연락처 추가 버튼 클릭 이벤트 클래스
@@ -76,16 +80,19 @@ public class AddressInputDialog extends JDialog {
         okBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                ArrayList<AddressDataType> tmpList;
                 String name = nameTextField.getText();
                 String number = numberTextField.getText();
                 String email = emailTextField.getText();
 
                 addressData = new AddressDataType(name, number, email, imgIcon);
-//                addressList.add(new AddressDataType(name, number, email, imgIcon));
+                tmpList = AddressBook.saveData(addressData);
 
-                AddressBook.saveData(addressData);
+                for (AddressDataType data : tmpList) {
+                    System.out.println(data);
+                }
 
-                leftPanel.updateLeftPanel(addressList);
+                leftPanel.updateLeftPanel(tmpList);
                 setVisible(false);
             }
         });
@@ -102,6 +109,17 @@ public class AddressInputDialog extends JDialog {
             }
         });
 
+        // esc로 닫기
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    setVisible(false);
+                }
+            }
+        });
+
+        setFocusable(true);
 
         setSize(500, 1000);
     }

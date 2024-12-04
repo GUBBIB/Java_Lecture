@@ -1,4 +1,5 @@
 package MyGUI;
+
 import MyPanelPackage.*;
 import MyDataType.*;
 
@@ -21,8 +22,6 @@ public class AddressBook extends JFrame {
         Container c = getContentPane();
         c.setLayout(null);
 
-        createMenu();
-
         AddressListPanel leftPanel = new AddressListPanel(this, addressList);
         FunctionPanel rightPanel = new FunctionPanel(this, addressList, leftPanel);
 
@@ -32,6 +31,8 @@ public class AddressBook extends JFrame {
         leftPanel.setLocation(10,10);
         rightPanel.setLocation(510,10);
 
+        createMenu(leftPanel);
+
         c.add(leftPanel);
         c.add(rightPanel);
 
@@ -39,7 +40,7 @@ public class AddressBook extends JFrame {
         setVisible(true);
     }
 
-    public void createMenu(){
+    public void createMenu(AddressListPanel leftPanel){
         // 메뉴 바 생성
         JMenuBar mb = new JMenuBar();
 
@@ -47,14 +48,38 @@ public class AddressBook extends JFrame {
         JMenu screenMenu = new JMenu("File");
         mb.add(screenMenu);
 
-        JMenuItem[] items = new JMenuItem[2];
-        String[] titles = {"연락처 추가", "종료"};
+        JMenuItem[] items = new JMenuItem[4];
+        String[] titles = {"연락처 추가", "수정", "삭제", "종료"};
 
         // 각 버튼의 이벤트 추가 및 메뉴 아이템 등록
-        MyMenuActionListener listener = new MyMenuActionListener();
         for(int i=0; i<titles.length; i++){
             items[i] = new JMenuItem(titles[i]);
-            items[i].addActionListener(listener);
+            items[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String cmd = e.getActionCommand();
+
+                    switch (cmd){
+                        // 버튼과 동일 기능
+                        case "연락처 추가":
+                            FunctionPanel.addBTN(AddressBook.this, addressList, leftPanel);
+                            break;
+
+                        case "수정":
+                            FunctionPanel.modifyBTN(AddressBook.this, addressList, leftPanel);
+                            break;
+
+                        case "삭제":
+                            FunctionPanel.deleteBTN(addressList, leftPanel, AddressBook.this);
+                            break;
+
+                        // 그냥 종료
+                        case "종료":
+                            System.exit(0);
+                            break;
+                    }
+                }
+            });
 
             screenMenu.add(items[i]);
         }
@@ -63,24 +88,7 @@ public class AddressBook extends JFrame {
         setJMenuBar(mb);
     }
 
-    // ActionListener 생성
-    static class MyMenuActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String cmd = e.getActionCommand();
 
-            switch (cmd){
-                // 버튼과 동일 기능
-                case "연락처 추가":
-                    break;
-
-                // 그냥 종료
-                case "종료":
-                    System.exit(0);
-                    break;
-            }
-        }
-    }
 
     // 입력한 연락처를 이름.txt 파일로 변환
     public static ArrayList<AddressDataType> saveData(AddressDataType addressAppendList) {
@@ -106,7 +114,8 @@ public class AddressBook extends JFrame {
     }
 
     // AddressBook 디렉토리 안의 .txt파일들을 읽어서 ArrayList addressList에 저장
-    public ArrayList<AddressDataType> loadData(){
+    public static ArrayList<AddressDataType> loadData(){
+        addressList.clear();
         File directory = new File("src\\AddressBook\\");
 
         if(!directory.exists()) {
@@ -122,6 +131,7 @@ public class AddressBook extends JFrame {
 
         // .txt 로 끝나는 file 들을 txtFiles에 저장
         ArrayList<File> txtFiles = new ArrayList<>();
+        txtFiles.clear();
         for (File file : allFiles) {
             if (file.isFile() && file.getName().endsWith(".txt")) {
                 txtFiles.add(file);
@@ -152,8 +162,8 @@ public class AddressBook extends JFrame {
             }
         }
 
-        // 제대로 읽었는지 확인용da
-        System.out.println("연락처 읽기 완료");
+        // 제대로 읽었는지 확인용
+//        System.out.println("연락처 읽기 완료");
 
         return addressList;
 
@@ -161,5 +171,6 @@ public class AddressBook extends JFrame {
 }
 
 
-// 지금 연락처 추가, 삭제, 검색 까지 완성
-// 수정(새 다이얼로그로)
+// 지금 연락처 추가, 삭제, 검색, 수정 까지 완성
+// 추가 기능: 리스트 우클릭시 팝업 버튼 나와서 수정, 삭제, 추가 기능 할 수 있게 하기
+// JMenuBar 에도 해당 기능 추가

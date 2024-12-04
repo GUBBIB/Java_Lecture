@@ -1,6 +1,7 @@
 package MyPanelPackage;
-import MyDataType.*;
+
 import MyDialogPackage.*;
+import MyDataType.*;
 
 import javax.swing.*;
 import java.awt.*;
