@@ -16,7 +16,7 @@ public class ModifyDialog extends JDialog {
     private File connection;
     private static BufferedReader br;
     private static BufferedWriter bw;
-    private JTextArea ta;
+    private JTextArea ta = new JTextArea();
     private JButton okBtn = new JButton("수정");
     private JButton escBtn = new JButton("닫기");
     private String name = "", number = "";
@@ -51,7 +51,7 @@ public class ModifyDialog extends JDialog {
                         connection = new File("src\\AddressBook\\" + fileName + ".txt");
 
                         try {
-                            ta = new JTextArea(readFile(connection.getAbsoluteFile()));
+                            ta.setText(readFile(connection.getAbsoluteFile()));
                             ta.setFont(new Font("D2Coding", Font.PLAIN, 30));
                         } catch (IOException ex) {
                             System.out.println("파일 읽기 실패");
@@ -78,7 +78,7 @@ public class ModifyDialog extends JDialog {
             connection = new File("src\\AddressBook\\" + fileName + ".txt");
 
             try {
-                ta = new JTextArea(readFile(connection.getAbsoluteFile()));
+                ta.setText(readFile(connection.getAbsoluteFile()));
                 ta.setFont(new Font("D2Coding", Font.PLAIN, 20));
             } catch (IOException ex) {
                 System.out.println("파일 읽기 실패");

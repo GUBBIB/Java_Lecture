@@ -86,6 +86,7 @@ public class AddressInputDialog extends JDialog {
                 String email = emailTextField.getText();
 
                 addressData = new AddressDataType(name, number, email, imgIcon);
+
                 tmpList = AddressBook.saveData(addressData);
 
                 for (AddressDataType data : tmpList) {
@@ -110,7 +111,7 @@ public class AddressInputDialog extends JDialog {
         });
 
         // esc로 닫기
-        addKeyListener(new KeyAdapter() {
+        nameTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -119,7 +120,6 @@ public class AddressInputDialog extends JDialog {
             }
         });
 
-        setFocusable(true);
 
         setSize(500, 1000);
     }

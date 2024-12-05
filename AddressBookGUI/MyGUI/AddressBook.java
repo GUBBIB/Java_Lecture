@@ -66,11 +66,11 @@ public class AddressBook extends JFrame {
                             break;
 
                         case "수정":
-                            FunctionPanel.modifyBTN(AddressBook.this, addressList, leftPanel);
+                            FunctionPanel.modifyBTN(AddressBook.this, addressList, leftPanel, null);
                             break;
 
                         case "삭제":
-                            FunctionPanel.deleteBTN(addressList, leftPanel, AddressBook.this);
+                            FunctionPanel.deleteBTN(AddressBook.this, addressList, leftPanel, null);
                             break;
 
                         // 그냥 종료
@@ -103,7 +103,8 @@ public class AddressBook extends JFrame {
             bw.newLine();
             bw.write("번호: " + addressAppendList.getNumber());
             bw.newLine();
-            bw.write("이메일: " + ((addressAppendList.getEmail() == null ) ? addressAppendList.getEmail() : "null" ));
+            System.out.println(addressAppendList.getEmail() == null);
+            bw.write("이메일: " + ((addressAppendList.getEmail() != null ) ? addressAppendList.getEmail() : "null" ));
             bw.newLine();
             bw.write("사진: " + ((addressAppendList.getPig() != null) ? addressAppendList.getPig().getDescription() : "null"));
         } catch(IOException e){

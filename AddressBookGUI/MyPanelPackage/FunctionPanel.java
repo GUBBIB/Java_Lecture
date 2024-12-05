@@ -76,7 +76,7 @@ public class FunctionPanel extends JPanel {
         // 삭제 버튼 이벤트 리스너
         delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                deleteBTN(addressList, leftPanel, parentFrame);
+                deleteBTN(parentFrame, addressList, leftPanel, null);
             }
         });
         // -----------------------------------------------------------------------
@@ -85,7 +85,7 @@ public class FunctionPanel extends JPanel {
         modify.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                modifyBTN(parentFrame, addressList, leftPanel);
+                modifyBTN(parentFrame, addressList, leftPanel, null);
             }
         });
 
@@ -130,19 +130,24 @@ public class FunctionPanel extends JPanel {
     }
 
     // 삭제 기능 메소드화
-    public static void deleteBTN(ArrayList<AddressDataType> addressList, AddressListPanel leftPanel, JFrame parentFrame){
+    public static void deleteBTN(JFrame parentFrame, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel, AddressDataType selectedValue){
         File file = new File("src\\AddressBook\\");
         File[] files = file.listFiles();
         ArrayList<AddressDataType> deleteAddress = new ArrayList<>();
 
-        String delete = JOptionPane.showInputDialog("삭제할 연락처의 이름 또는 번호를 입력하세요");
+        String delete = "";
         Boolean chk = false;
 
         try {
-            for (AddressDataType data : addressList) {
-                if (data.getName().equals(delete) || data.getNumber().equals(delete)) {
-                    deleteAddress.add(data);
+            if(selectedValue == null) {
+                delete = JOptionPane.showInputDialog("삭제할 연락처의 이름 또는 번호를 입력하세요");
+                for (AddressDataType data : addressList) {
+                    if (data.getName().equals(delete) || data.getNumber().equals(delete)) {
+                        deleteAddress.add(data);
+                    }
                 }
+            } else {
+                deleteAddress.add(selectedValue);
             }
 
             // 동명이인 있을 때
@@ -152,9 +157,8 @@ public class FunctionPanel extends JPanel {
 
             } else if(deleteAddress.size() == 1){ // 한명일 때
 
-                deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, files, true, addressList, leftPanel);
+                deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, files, false, addressList, leftPanel);
                 deleteDialog.setVisible(false);
-                JOptionPane.showMessageDialog(null, "삭제 완료");
 
             } else {
                 JOptionPane.showMessageDialog(null, "연락처 없음", "경고", JOptionPane.ERROR_MESSAGE);
@@ -164,6 +168,8 @@ public class FunctionPanel extends JPanel {
         } catch(NullPointerException e){
             JOptionPane.showMessageDialog(null, "해당 연락처 파일 없음", "경고", JOptionPane.ERROR_MESSAGE);
         }
+
+
     }
 
     // 삭제 기능 주 메소드
@@ -180,11 +186,14 @@ public class FunctionPanel extends JPanel {
                             (data.getName().contains(fileName[1]) && data.getNumber().contains(fileName[1]))
             ){
                 tmpAddressData = data;
+                break;
             }
         }
 
+        System.out.println(tmpAddressData);
+
         for (File deleteFile : files) {
-            if (deleteFile.getName().contains(fileName[0].trim()) || deleteFile.getName().contains(fileName[1].trim())) {
+            if (deleteFile.getName().contains(fileName[0].trim()) && deleteFile.getName().contains(fileName[1].trim())) {
                 tmpFile = deleteFile;
                 isFile = true;
                 breakChk = true;
@@ -212,29 +221,39 @@ public class FunctionPanel extends JPanel {
     }
 
     // 수정 기능 메소드화
-    public static void modifyBTN(JFrame parentFrame, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel){
-        String modify = JOptionPane.showInputDialog("수정할 연락처의 이름 또는 번호를 입력하세요");
+    public static void modifyBTN(JFrame parentFrame, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel, AddressDataType selectedValue){
+
         ArrayList<AddressDataType> modifyAddress = new ArrayList<>();
         boolean chk = false;
+        System.out.println(selectedValue);
 
-        for (AddressDataType data : addressList) {
-            if(data.getName().equals(modify) || data.getNumber().equals(modify)) {
-                modifyAddress.add(data);
-                chk = true;
+        if(selectedValue == null) { // 일반 수정
+            String modify = JOptionPane.showInputDialog("수정할 연락처의 이름 또는 번호를 입력하세요");
+
+            for (AddressDataType data : addressList) {
+                if (data.getName().equals(modify) || data.getNumber().equals(modify)) {
+                    modifyAddress.add(data);
+                    chk = true;
+                }
             }
+        } else { // JList에서 우클릭으로 선택 한 수정
+            modifyAddress.add(selectedValue);
         }
 
-
         // 같은 이름 또는 같은 번호가 2개 이상이라면
-        if(modifyAddress.size() > 1){
+        if (modifyAddress.size() > 1) {
             modifyDialog = new ModifyDialog(parentFrame, "연락처 수정", modifyAddress, true, leftPanel);
             modifyDialog.setVisible(true);
-        } else if(modifyAddress.size() == 1) {
+        } else if (modifyAddress.size() == 1) {
             modifyDialog = new ModifyDialog(parentFrame, "연락처 수정", modifyAddress, false, leftPanel);
             modifyDialog.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "연락처가 없습니다.");
         }
+
+
+
+
     }
 
 }

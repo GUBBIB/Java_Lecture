@@ -2,6 +2,8 @@ package MyPanelPackage;
 
 import MyDialogPackage.*;
 import MyDataType.*;
+import MyGUI.AddressBook;
+import MyPopupMenu.PopupMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +15,7 @@ public class AddressListPanel extends JPanel {
     //
     private static Vector<AddressDataType> addressData;
     private JList<AddressDataType> addressJList;
+    private PopupMenu popupMenu;
 
     // AddressData 타입으로 연락처를 저장할 공간을 생성
     public AddressListPanel(JFrame f, ArrayList<AddressDataType> addressList){
@@ -27,15 +30,9 @@ public class AddressListPanel extends JPanel {
 
         addressJList = new JList<>(addressData);
         addressJList.setFont(new Font("D2Coding", Font.PLAIN, 30));
-        // Vector에 잘 들어갔는지 확인 코드
-//        System.out.println("Vector 데이터 확인");
-//        for (AddressDataType i : addressData) {
-//            System.out.printf("chk : ");
-//            System.out.println(i);
-//        }
 
         JScrollPane scrollPane = new JScrollPane(addressJList);
-        add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane);
 
         // JList에 익명함수 리스너 등록
         addressJList.addMouseListener(new MouseAdapter() {
@@ -44,8 +41,11 @@ public class AddressListPanel extends JPanel {
                 if (e.getClickCount() == 2) { // 더블클릭
                     DetailDialog detailDialog = new DetailDialog(f, "자세한 정보", addressJList.getSelectedValue());
                     detailDialog.setVisible(true);
-                } else if(e.getButton() == MouseEvent.BUTTON3){ // 우클릭
-
+                }
+                else if(e.getButton() == MouseEvent.BUTTON3){ // 우클릭 시 팝업 창
+                    popupMenu = new PopupMenu(f, addressList, AddressListPanel.this, addressJList.getSelectedValue());
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    System.out.println("우클릭");
                 }
             }
         });
@@ -67,6 +67,7 @@ public class AddressListPanel extends JPanel {
         addressJList.setListData(addressData);
         repaint();
     }
+
     // 검색할 때 JList 업데이트 메소드
     public void updateSearchLeftPanel(ArrayList<AddressDataType> newAddressData) {
         addressData.clear();
