@@ -1,4 +1,4 @@
-package MyDialogPackage;
+package MyDialog;
 
 import MyDataType.AddressDataType;
 
@@ -24,6 +24,8 @@ public class DetailDialog extends JDialog {
         JTextArea label = new JTextArea(str);
         panel.add(label, BorderLayout.NORTH);
 
+        label.setEditable(false);
+
         if(selectedValue.getPig() != null){
             ImageIcon pig = selectedValue.getPig();
             JLabel imgLabel = new JLabel(pig);
@@ -45,7 +47,15 @@ public class DetailDialog extends JDialog {
 
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_ENTER){
+                    setVisible(false);
+                }
+            }
+        });
+        label.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_ENTER) {
                     setVisible(false);
                 }
             }

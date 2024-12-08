@@ -1,4 +1,4 @@
-package MyPanelPackage;
+package MyPanel;
 
 import MyDataType.*;
 
@@ -8,9 +8,9 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.*;
 
-import MyDialogPackage.AddressInputDialog;
-import MyDialogPackage.DeleteDialog;
-import MyDialogPackage.ModifyDialog;
+import MyDialog.AddressInputDialog;
+import MyDialog.DeleteDialog;
+import MyDialog.ModifyDialog;
 
 // 오른쪽 Panel 에 대한 클래스
 public class FunctionPanel extends JPanel {
@@ -120,7 +120,7 @@ public class FunctionPanel extends JPanel {
                 }
             }
         }
-        leftPanel.updateSearchLeftPanel(tmpList);
+        leftPanel.updateLeftPanel(tmpList);
     }
 
     // 추가 기능 메소드화
@@ -132,100 +132,57 @@ public class FunctionPanel extends JPanel {
     // 삭제 기능 메소드화
     public static void deleteBTN(JFrame parentFrame, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel, AddressDataType selectedValue){
         File file = new File("src\\AddressBook\\");
-        File[] files = file.listFiles();
+        File[] allFiles = file.listFiles();
         ArrayList<AddressDataType> deleteAddress = new ArrayList<>();
 
         String delete = "";
         Boolean chk = false;
 
-        try {
-            if(selectedValue == null) {
-                delete = JOptionPane.showInputDialog("삭제할 연락처의 이름 또는 번호를 입력하세요");
-                for (AddressDataType data : addressList) {
-                    if (data.getName().equals(delete) || data.getNumber().equals(delete)) {
-                        deleteAddress.add(data);
-                    }
+        // .txt 로 끝나는 file 들을 txtFiles에 저장
+        ArrayList<File> txtFiles = new ArrayList<>();
+        txtFiles.clear();
+        for (File files : allFiles) {
+            if (files.isFile() && files.getName().endsWith(".txt")) {
+                txtFiles.add(files);
+            }
+        }
+
+
+        // 일반적 삭제 기능
+        if(selectedValue == null) {
+            delete = JOptionPane.showInputDialog("삭제할 연락처의 이름 또는 번호를 입력하세요");
+            for (AddressDataType data : addressList) {
+                if (data.getName().equals(delete) || data.getNumber().equals(delete)) {
+                    deleteAddress.add(data);
                 }
-            } else {
-                deleteAddress.add(selectedValue);
             }
-
-            // 동명이인 있을 때
-            if(deleteAddress.size() > 1){
-
-                deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, files, true, addressList, leftPanel);                deleteDialog.setVisible(true);
-
-            } else if(deleteAddress.size() == 1){ // 한명일 때
-
-                deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, files, false, addressList, leftPanel);
-                deleteDialog.setVisible(false);
-
-            } else {
-                JOptionPane.showMessageDialog(null, "연락처 없음", "경고", JOptionPane.ERROR_MESSAGE);
-            }
-            // 파일 삭제 참고 https://javacpro.tistory.com/27
-
-        } catch(NullPointerException e){
-            JOptionPane.showMessageDialog(null, "해당 연락처 파일 없음", "경고", JOptionPane.ERROR_MESSAGE);
+        } else { // 우클릭으로 선택 후, 삭제 기능
+            deleteAddress.add(selectedValue);
         }
 
+        // 동명이인 있을 때
+        if(deleteAddress.size() > 1){
 
-    }
+            deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, txtFiles, true, addressList, leftPanel);
+            deleteDialog.setVisible(true);
 
-    // 삭제 기능 주 메소드
-    public static void deleteFunction(String[] fileName, File[] files, ArrayList<AddressDataType> addressList, ArrayList<AddressDataType> deleteAddress, AddressListPanel leftPanel){
-        boolean isFile = false, breakChk = false;
-        File tmpFile = null;
-        AddressDataType tmpAddressData = new AddressDataType();
+        } else if(deleteAddress.size() == 1){ // 한명일 때
 
-        for (AddressDataType data : deleteAddress) {
-            if(
-                    (data.getName().contains(fileName[0]) && data.getNumber().contains(fileName[0])) ||
-                            (data.getName().contains(fileName[0]) && data.getNumber().contains(fileName[1])) ||
-                            (data.getName().contains(fileName[1]) && data.getNumber().contains(fileName[0])) ||
-                            (data.getName().contains(fileName[1]) && data.getNumber().contains(fileName[1]))
-            ){
-                tmpAddressData = data;
-                break;
-            }
-        }
+            deleteDialog = new DeleteDialog(parentFrame, "삭제 리스트", deleteAddress, txtFiles, false, addressList, leftPanel);
+            deleteDialog.setVisible(false);
 
-        System.out.println(tmpAddressData);
-
-        for (File deleteFile : files) {
-            if (deleteFile.getName().contains(fileName[0].trim()) && deleteFile.getName().contains(fileName[1].trim())) {
-                tmpFile = deleteFile;
-                isFile = true;
-                breakChk = true;
-                break;
-
-            }
-            if (breakChk) {
-                break;
-            }
-        }
-
-        if (isFile) {
-            if (tmpFile.delete()) {
-                JOptionPane.showMessageDialog(null, "삭제 완료");
-            } else {
-                JOptionPane.showMessageDialog(null, "연락처 없음", "경고", JOptionPane.ERROR_MESSAGE);
-            }
         } else {
-            JOptionPane.showMessageDialog(null, "연락처 없음", "경고", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "연락처 없습니다.", "경고", JOptionPane.ERROR_MESSAGE);
         }
-
-
-        addressList.remove(tmpAddressData);
-        leftPanel.updateLeftPanel(addressList);
+        // 파일 삭제 참고 https://javacpro.tistory.com/27
     }
+
+
 
     // 수정 기능 메소드화
     public static void modifyBTN(JFrame parentFrame, ArrayList<AddressDataType> addressList, AddressListPanel leftPanel, AddressDataType selectedValue){
 
         ArrayList<AddressDataType> modifyAddress = new ArrayList<>();
-        boolean chk = false;
-        System.out.println(selectedValue);
 
         if(selectedValue == null) { // 일반 수정
             String modify = JOptionPane.showInputDialog("수정할 연락처의 이름 또는 번호를 입력하세요");
@@ -233,7 +190,6 @@ public class FunctionPanel extends JPanel {
             for (AddressDataType data : addressList) {
                 if (data.getName().equals(modify) || data.getNumber().equals(modify)) {
                     modifyAddress.add(data);
-                    chk = true;
                 }
             }
         } else { // JList에서 우클릭으로 선택 한 수정

@@ -2,13 +2,13 @@ package MyDataType;
 
 import javax.swing.*;
 
-// 연락처를 저장할 타입 클랙스
+// 연락처를 저장할 타입 클래스
 public class AddressDataType {
     private String name, number, email;
     private ImageIcon pig;
 
     public AddressDataType(){
-        name = number = email = null;
+        name = number = email = "null";
         pig = null;
     }
 
@@ -36,6 +36,7 @@ public class AddressDataType {
         return pig;
     }
 
+    // AddressListPanel 의 JList 에 보일 형태
     @Override
     public String toString() {
         return getName() + "  || " + getNumber();

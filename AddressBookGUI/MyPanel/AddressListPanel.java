@@ -1,8 +1,7 @@
-package MyPanelPackage;
+package MyPanel;
 
-import MyDialogPackage.*;
+import MyDialog.*;
 import MyDataType.*;
-import MyGUI.AddressBook;
 import MyPopupMenu.PopupMenu;
 
 import javax.swing.*;
@@ -22,7 +21,7 @@ public class AddressListPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        if (addressList != null) {
+        if (addressList == null || !addressList.isEmpty()) {
             addressData = new Vector<>(addressList);
         } else {
             addressData = new Vector<>();
@@ -45,7 +44,6 @@ public class AddressListPanel extends JPanel {
                 else if(e.getButton() == MouseEvent.BUTTON3){ // 우클릭 시 팝업 창
                     popupMenu = new PopupMenu(f, addressList, AddressListPanel.this, addressJList.getSelectedValue());
                     popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                    System.out.println("우클릭");
                 }
             }
         });
@@ -64,16 +62,8 @@ public class AddressListPanel extends JPanel {
         addressData.clear();
         addressData.addAll(newAddressData);
 
+        addressData.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         addressJList.setListData(addressData);
         repaint();
-    }
-
-    // 검색할 때 JList 업데이트 메소드
-    public void updateSearchLeftPanel(ArrayList<AddressDataType> newAddressData) {
-        addressData.clear();
-        addressData.addAll(newAddressData);
-        addressJList.setListData(addressData);
-        repaint();
-
     }
 }

@@ -1,8 +1,8 @@
 package MyPopupMenu;
 
 import MyDataType.AddressDataType;
-import MyPanelPackage.AddressListPanel;
-import MyPanelPackage.FunctionPanel;
+import MyPanel.AddressListPanel;
+import MyPanel.FunctionPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

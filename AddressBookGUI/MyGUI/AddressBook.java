@@ -1,6 +1,6 @@
 package MyGUI;
 
-import MyPanelPackage.*;
+import MyPanel.*;
 import MyDataType.*;
 
 
@@ -12,7 +12,7 @@ import java.util.*;
 
 // 메인 클래스
 public class AddressBook extends JFrame {
-    public static ArrayList<AddressDataType> addressList = new ArrayList<>();
+    private static ArrayList<AddressDataType> addressList = new ArrayList<>();
     public AddressBook(){
         addressList = loadData();
 
@@ -91,26 +91,39 @@ public class AddressBook extends JFrame {
 
 
     // 입력한 연락처를 이름.txt 파일로 변환
-    public static ArrayList<AddressDataType> saveData(AddressDataType addressAppendList) {
+    public static ArrayList<AddressDataType> saveData(AddressDataType addressAppendData) {
         File directory = new File("src\\AddressBook\\");
+        File[] allFile = directory.listFiles();
 
-        // 이름 || 번호 .txt 생성
-        String fileName = addressAppendList.getName() + "&" + addressAppendList.getNumber() + ".txt";
+        // 이름&번호 .txt 생성
+        String fileName = addressAppendData.getName() + "&" + addressAppendData.getNumber() + ".txt";
+
+        for (File files : allFile) {
+            if (files.getName().equals(fileName)) {
+                JOptionPane.showMessageDialog(null, "해당 파일이 이미 존재합니다.", "파일 이미 존재", JOptionPane.ERROR_MESSAGE);
+                return addressList;
+            }
+        }
+
+        // 확실하게 email 변수 관리
+        String email = addressAppendData.getEmail();
+        if (email == null || email.isEmpty()) {
+            email = "null";
+        }
         File file = new File(directory, fileName);
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            bw.write("이름: " + addressAppendList.getName());
+            bw.write("이름: " + addressAppendData.getName());
             bw.newLine();
-            bw.write("번호: " + addressAppendList.getNumber());
+            bw.write("번호: " + addressAppendData.getNumber());
             bw.newLine();
-            System.out.println(addressAppendList.getEmail() == null);
-            bw.write("이메일: " + ((addressAppendList.getEmail() != null ) ? addressAppendList.getEmail() : "null" ));
+            bw.write("이메일: " + email);
             bw.newLine();
-            bw.write("사진: " + ((addressAppendList.getPig() != null) ? addressAppendList.getPig().getDescription() : "null"));
+            bw.write("사진: " + ((addressAppendData.getPig() != null) ? addressAppendData.getPig().getDescription() : "null"));
         } catch(IOException e){
-            System.out.println("파일 접근불가!");
+            JOptionPane.showMessageDialog(null, "파일 접근불가!", "I/O Exception", JOptionPane.ERROR_MESSAGE);
         }
-        addressList.add(addressAppendList);
+        addressList.add(addressAppendData);
         return addressList;
     }
 
@@ -119,16 +132,12 @@ public class AddressBook extends JFrame {
         addressList.clear();
         File directory = new File("src\\AddressBook\\");
 
-        if(!directory.exists()) {
-            return new ArrayList<AddressDataType>();
-        }
-
-        // --------------- AddressBook 하위 폴더 이름 가져오는 부분 ---------------
-
         File[] allFiles = directory.listFiles();
         if(allFiles == null || allFiles.length == 0){
             return new ArrayList<AddressDataType>();
         }
+
+        // --------------- AddressBook 하위 폴더 이름 가져오는 부분 ---------------
 
         // .txt 로 끝나는 file 들을 txtFiles에 저장
         ArrayList<File> txtFiles = new ArrayList<>();
@@ -153,25 +162,16 @@ public class AddressBook extends JFrame {
                     File pigFile = new File(pigPath);
                     pig = new ImageIcon(pigFile.getPath());
                 }
-
                 AddressDataType data = new AddressDataType(name, number, email, pig);
                 addressList.add(data);
 
             } catch (IOException e){
-                System.out.println("파일 읽기 중 오류 발생");
+                JOptionPane.showMessageDialog(null, "파일 읽기 중 오류  발생", "I/O Exception", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
         }
-
-        // 제대로 읽었는지 확인용
-//        System.out.println("연락처 읽기 완료");
 
         return addressList;
 
     }
 }
-
-
-// 지금 연락처 추가, 삭제, 검색, 수정 까지 완성
-// 추가 기능: 리스트 우클릭시 팝업 버튼 나와서 수정, 삭제, 추가 기능 할 수 있게 하기
-// JMenuBar 에도 해당 기능 추가
