@@ -2,9 +2,6 @@ import MyGUI.AddressBook;
 import java.io.File;
 
 public class Main {
-    public Main() {
-    }
-
     public static void main(String[] args) {
         File directory = new File("src\\AddressBook");
         if (!directory.exists() && !directory.mkdirs()) {
